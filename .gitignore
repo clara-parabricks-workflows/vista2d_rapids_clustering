@@ -1,0 +1,4 @@
+.ipynb_checkpoints
+__pycache__
+model_vista2d_v1.pt
+run.sh

@@ -3,15 +3,15 @@ import PIL
 import numpy as np
 import torch
 import sys
-sys.path.append('./cell_vista_segmentation')
+# sys.path.append('./cell_vista_segmentation')
 
 from cuml import DBSCAN, PCA
 
 from matplotlib import pyplot as plt
 from monai.transforms import ScaleIntensityRangePercentiles
 
-from cell_vista_segmentation.scripts.dynamics import compute_masks
-from cell_vista_segmentation.scripts.cell_sam_wrapper import CellSamWrapper
+from cellpose.dynamics import resize_and_compute_masks
+from monai.networks.nets.cell_sam_wrapper import CellSamWrapper
 
 # Wrapper for Vista2D model so we can extract embeddings
 class CellFeatureExtractor(CellSamWrapper):
@@ -94,7 +94,7 @@ def segment_cells(img_path, checkpoint_path):
         dP = segmentation[b_ind, 1:]  # vectors
         cellprob = segmentation[b_ind, 0]  # foreground prob (logit)
         resize = [segmentation.shape[2], segmentation.shape[3]]
-        pred_mask, p = compute_masks(
+        pred_mask, p = resize_and_compute_masks(
             dP,
             cellprob,
             niter=200,
@@ -102,8 +102,7 @@ def segment_cells(img_path, checkpoint_path):
             flow_threshold=0.4,
             interp=True,
             resize=resize,
-            use_gpu=True,
-            device=None,
+            device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
         )
         pred_mask_all.append(pred_mask)
 

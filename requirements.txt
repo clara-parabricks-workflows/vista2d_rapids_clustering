@@ -1,4 +1,0 @@
-fastremap
-tifffile 
-monai
-plotly
