@@ -1,3 +1,0 @@
-[submodule "model-zoo"]
-	path = model-zoo
-	url = git@github.com:Project-MONAI/model-zoo.git
